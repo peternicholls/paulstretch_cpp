@@ -5,14 +5,32 @@
 set -e
 
 REPO="peternicholls/paulstretch_cpp"
+TEMP_DIR=$(mktemp -d)
 
 echo "Creating 16 upstream issues in $REPO..."
 
+cleanup() {
+    rm -rf "$TEMP_DIR"
+}
+trap cleanup EXIT
+
+# Function to create issue from file
+create_issue() {
+    local title="$1"
+    local body_file="$2"
+    local issue_num="$3"
+    
+    gh issue create \
+        --repo "$REPO" \
+        --title "$title" \
+        --body-file "$body_file"
+    
+    echo "✓ Created issue $issue_num/16: $title"
+}
+
 # Issue 1: Paulstretch segmentation fault
-gh issue create \
-  --repo "$REPO" \
-  --title "Paulstretch segmentation fault" \
-  --body '[Synced from upstream]
+cat > "$TEMP_DIR/issue1.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/18
 **Original Author:** @dblanchemain
@@ -52,41 +70,38 @@ recvmsg(3, {msg_namelen=0}, 0)          = -1 EAGAIN (Ressource temporairement no
 futex(0x556ce867b608, FUTEX_WAKE_PRIVATE, 1) = 1
 futex(0x556ce867b620, FUTEX_WAKE_PRIVATE, 1) = 1
 futex(0x7f5663bb99d0, FUTEX_WAIT, 38437, NULL) = ?
-+++ killed by SIGSEGV +++'
++++ killed by SIGSEGV +++
+EOF
 
-echo "✓ Created issue 1/16: Paulstretch segmentation fault"
+create_issue "Paulstretch segmentation fault" "$TEMP_DIR/issue1.md" "1"
 
-# Issue 2: No return in a function expecting one... Triggers undefined behavior with GCC14
-gh issue create \
-  --repo "$REPO" \
-  --title "No return in a function expecting one... Triggers undefined behavior with GCC14" \
-  --body '[Synced from upstream]
+# Issue 2
+cat > "$TEMP_DIR/issue2.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/17
 **Original Author:** @ttsiodras
 
-No return in a function expecting one... Triggers undefined behavior with GCC14 (generation of an invalid instruction in my n5095).'
+No return in a function expecting one... Triggers undefined behavior with GCC14 (generation of an invalid instruction in my n5095).
+EOF
 
-echo "✓ Created issue 2/16: No return in a function expecting one..."
+create_issue "No return in a function expecting one... Triggers undefined behavior with GCC14" "$TEMP_DIR/issue2.md" "2"
 
-# Issue 3: Clear path to download
-gh issue create \
-  --repo "$REPO" \
-  --title "Clear path to download" \
-  --body '[Synced from upstream]
+# Issue 3
+cat > "$TEMP_DIR/issue3.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/16
 **Original Author:** @hebronwatson
 
-Please document a clear path to download the plug-in, somewhere in this repo, if there is one.'
+Please document a clear path to download the plug-in, somewhere in this repo, if there is one.
+EOF
 
-echo "✓ Created issue 3/16: Clear path to download"
+create_issue "Clear path to download" "$TEMP_DIR/issue3.md" "3"
 
-# Issue 4: Mac Builds are unsigned
-gh issue create \
-  --repo "$REPO" \
-  --title "Mac Builds are unsigned" \
-  --body '[Synced from upstream]
+# Issue 4
+cat > "$TEMP_DIR/issue4.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/15
 **Original Author:** @amias-channer
@@ -100,93 +115,86 @@ but it should be done by a project admin because it needs repo secrets access an
 
 https://localazy.com/blog/how-to-automatically-sign-macos-apps-using-github-actions
 
-Happy to help if you get stuck'
+Happy to help if you get stuck
+EOF
 
-echo "✓ Created issue 4/16: Mac Builds are unsigned"
+create_issue "Mac Builds are unsigned" "$TEMP_DIR/issue4.md" "4"
 
-# Issue 5: Multiple audio file support?
-gh issue create \
-  --repo "$REPO" \
-  --title "Multiple audio file support?" \
-  --body '[Synced from upstream]
+# Issue 5
+cat > "$TEMP_DIR/issue5.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/14
 **Original Author:** @Jamaldude
 
-Hi, is there currently any way to apply a paulstretch preference file towards multiple audio files with a batch file so I could drag and drop? That would really make my life easier than doing each one individually. I don'\''t know if the python version would be better for this or not, but could someone send me in the right direction? Thanks!'
+Hi, is there currently any way to apply a paulstretch preference file towards multiple audio files with a batch file so I could drag and drop? That would really make my life easier than doing each one individually. I don't know if the python version would be better for this or not, but could someone send me in the right direction? Thanks!
+EOF
 
-echo "✓ Created issue 5/16: Multiple audio file support?"
+create_issue "Multiple audio file support?" "$TEMP_DIR/issue5.md" "5"
 
-# Issue 6: fix compatibility with mxml 3.0
-gh issue create \
-  --repo "$REPO" \
-  --title "fix compatibility with mxml 3.0" \
-  --body '[Synced from upstream]
+# Issue 6
+cat > "$TEMP_DIR/issue6.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/12
 **Original Author:** @afontenot
 
-Just a quick fix for #11'
+Just a quick fix for #11
+EOF
 
-echo "✓ Created issue 6/16: fix compatibility with mxml 3.0"
+create_issue "fix compatibility with mxml 3.0" "$TEMP_DIR/issue6.md" "6"
 
-# Issue 7: Feature request:  Use frequency shift to generate binaural beats
-gh issue create \
-  --repo "$REPO" \
-  --title "Feature request:  Use frequency shift to generate binaural beats" \
-  --body '[Synced from upstream]
+# Issue 7
+cat > "$TEMP_DIR/issue7.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/10
 **Original Author:** @nebosite
 
-It appears that binaural beats are generated through amplitude modulation, which is understandable if you want to peg the beats to a specific rate.    However it is my understanding binaural beats are also generated by pure tones that are slightly off in frequency.   I think it would be interesting to slightly shift the frequency of just the left audio track to generate a subtle beat effect.'
+It appears that binaural beats are generated through amplitude modulation, which is understandable if you want to peg the beats to a specific rate.    However it is my understanding binaural beats are also generated by pure tones that are slightly off in frequency.   I think it would be interesting to slightly shift the frequency of just the left audio track to generate a subtle beat effect.
+EOF
 
-echo "✓ Created issue 7/16: Feature request: Use frequency shift to generate binaural beats"
+create_issue "Feature request:  Use frequency shift to generate binaural beats" "$TEMP_DIR/issue7.md" "7"
 
-# Issue 8: PaulStretch to Homebrew Cask?
-gh issue create \
-  --repo "$REPO" \
-  --title "PaulStretch to Homebrew Cask?" \
-  --body '[Synced from upstream]
+# Issue 8
+cat > "$TEMP_DIR/issue8.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/9
 **Original Author:** @esaruoho
 
-D'\''you reckon there'\''s any chance paulstretch could be added to homebrew? even as a cask?'
+D'you reckon there's any chance paulstretch could be added to homebrew? even as a cask?
+EOF
 
-echo "✓ Created issue 8/16: PaulStretch to Homebrew Cask?"
+create_issue "PaulStretch to Homebrew Cask?" "$TEMP_DIR/issue8.md" "8"
 
-# Issue 9: C make build system
-gh issue create \
-  --repo "$REPO" \
-  --title "C make build system" \
-  --body '[Synced from upstream]
+# Issue 9
+cat > "$TEMP_DIR/issue9.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/8
 **Original Author:** @Chaircrusher
 
-This simply adds the CMake build system.  This should all (still) building on Mac OS X, but I no longer have a system to test this build environment against.'
+This simply adds the CMake build system.  This should all (still) building on Mac OS X, but I no longer have a system to test this build environment against.
+EOF
 
-echo "✓ Created issue 9/16: C make build system"
+create_issue "C make build system" "$TEMP_DIR/issue9.md" "9"
 
-# Issue 10: ENH: Add flac reading and writing
-gh issue create \
-  --repo "$REPO" \
-  --title "ENH: Add flac reading and writing" \
-  --body '[Synced from upstream]
+# Issue 10
+cat > "$TEMP_DIR/issue10.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/7
 **Original Author:** @Chaircrusher
 
-This patch -- which is pretty simple actually -- adds the ability to load and render to FLAC files.  It does require that libFLAC be available, and also that audiofile library 0.3.6 is available.'
+This patch -- which is pretty simple actually -- adds the ability to load and render to FLAC files.  It does require that libFLAC be available, and also that audiofile library 0.3.6 is available.
+EOF
 
-echo "✓ Created issue 10/16: ENH: Add flac reading and writing"
+create_issue "ENH: Add flac reading and writing" "$TEMP_DIR/issue10.md" "10"
 
-# Issue 11: Integration improvements
-gh issue create \
-  --repo "$REPO" \
-  --title "Integration improvements" \
-  --body '[Synced from upstream]
+# Issue 11
+cat > "$TEMP_DIR/issue11.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/6
 **Original Author:** @trebmuh
@@ -195,64 +203,60 @@ This commits adds a freedesktop file + an image to be used by it, and a manpage 
 
 I have no clue how to include that in the makefile process.
 
-Hope that helps.'
+Hope that helps.
+EOF
 
-echo "✓ Created issue 11/16: Integration improvements"
+create_issue "Integration improvements" "$TEMP_DIR/issue11.md" "11"
 
-# Issue 12: Update Control.cpp (typo)
-gh issue create \
-  --repo "$REPO" \
-  --title "Update Control.cpp (typo)" \
-  --body '[Synced from upstream]
+# Issue 12
+cat > "$TEMP_DIR/issue12.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/pull/5
 **Original Author:** @trebmuh
 
 One small typo.
-I didn'\''t make the changes in the program'\''s variable/function since I don'\''t know what would be the implications (I'\''m not a coder).
-Hope that helps.'
+I didn't make the changes in the program's variable/function since I don't know what would be the implications (I'm not a coder).
+Hope that helps.
+EOF
 
-echo "✓ Created issue 12/16: Update Control.cpp (typo)"
+create_issue "Update Control.cpp (typo)" "$TEMP_DIR/issue12.md" "12"
 
-# Issue 13: Mac OS X version
-gh issue create \
-  --repo "$REPO" \
-  --title "Mac OS X version" \
-  --body '[Synced from upstream]
+# Issue 13
+cat > "$TEMP_DIR/issue13.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/4
 **Original Author:** @padsbanger
 
-It is possible for anyone to compile this to Mac OS X version ?'
+It is possible for anyone to compile this to Mac OS X version ?
+EOF
 
-echo "✓ Created issue 13/16: Mac OS X version"
+create_issue "Mac OS X version" "$TEMP_DIR/issue13.md" "13"
 
-# Issue 14: ArchLinux build error
-gh issue create \
-  --repo "$REPO" \
-  --title "ArchLinux build error" \
-  --body '[Synced from upstream]
+# Issue 14
+cat > "$TEMP_DIR/issue14.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/3
 **Original Author:** @smoge
 
-I'\''m getting this error on an updated 64bit ArchLinux:
+I'm getting this error on an updated 64bit ArchLinux:
 
 ```
 $ ./compile_linux_fftw_jack.sh 
-/usr/bin/ld: /tmp/ccxnXlzq.o: undefined reference to symbol '\''vorbis_block_init'\''
-/usr/bin/ld: note: '\''vorbis_block_init'\'' is defined in DSO /usr/lib/libvorbis.so.0 so try adding it to the linker command line
+/usr/bin/ld: /tmp/ccxnXlzq.o: undefined reference to symbol 'vorbis_block_init'
+/usr/bin/ld: note: 'vorbis_block_init' is defined in DSO /usr/lib/libvorbis.so.0 so try adding it to the linker command line
 /usr/lib/libvorbis.so.0: could not read symbols: Invalid operation
 collect2: error: ld returned 1 exit status
-```'
+```
+EOF
 
-echo "✓ Created issue 14/16: ArchLinux build error"
+create_issue "ArchLinux build error" "$TEMP_DIR/issue14.md" "14"
 
-# Issue 15: missing zlib linkage
-gh issue create \
-  --repo "$REPO" \
-  --title "missing zlib linkage" \
-  --body '[Synced from upstream]
+# Issue 15
+cat > "$TEMP_DIR/issue15.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/2
 **Original Author:** @iioflow
@@ -260,21 +264,20 @@ gh issue create \
 the compile_linux_* scripts are missing the explicit link to zlib. they need "-lz" appended after "-mxml", otherwise all builds will fail with undefined references to gzopen etc.:
 
 > > > Compiling source in /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2 ...
-> > > /var/tmp/portage/media-sound/paulstretch-2.2/temp/ccau9w4Y.o: In function `XMLwrapper::dosavefile(char*, int, char*)'\''':
-> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:196: undefined reference to`gzopen'\''
-> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:198: undefined reference to `gzputs'\''
-> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:199: undefined reference to`gzclose'\''
+> > > /var/tmp/portage/media-sound/paulstretch-2.2/temp/ccau9w4Y.o: In function `XMLwrapper::dosavefile(char*, int, char*)':
+> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:196: undefined reference to`gzopen'
+> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:198: undefined reference to `gzputs'
+> > > /var/tmp/portage/media-sound/paulstretch-2.2/work/paulstretch-2.2-2/XMLwrapper.cpp:199: undefined reference to`gzclose'
 > > > ....and so on
 
-also happens when running the compile_* scripts directly, not just when using gentoo'\''s source package manager. after patching compile_*.sh to include "-lz" the package builds and runs as expected.'
+also happens when running the compile_* scripts directly, not just when using gentoo's source package manager. after patching compile_*.sh to include "-lz" the package builds and runs as expected.
+EOF
 
-echo "✓ Created issue 15/16: missing zlib linkage"
+create_issue "missing zlib linkage" "$TEMP_DIR/issue15.md" "15"
 
-# Issue 16: First few seconds at any stretch have intense distortion
-gh issue create \
-  --repo "$REPO" \
-  --title "First few seconds at any stretch have intense distortion" \
-  --body '[Synced from upstream]
+# Issue 16
+cat > "$TEMP_DIR/issue16.md" << 'EOF'
+[Synced from upstream]
 
 **Original Issue:** https://github.com/paulnasca/paulstretch_cpp/issues/1
 **Original Author:** @dancrew32
@@ -286,16 +289,17 @@ First off, this processor is amazing. My only issue with it so far has been the 
 3.) hit play (from beginning)
 4.) listen to next 10 seconds of super-high frequency distortion. This sound fades out as you get to the beginning of the actual music.
 
-I'\''m not sure what would cause that distortion.. perhaps an error when attempting to re-sample data at the beginning of the song? zero volume data or maybe a lack of data to read causing the processor to re-sample and amplify erroneous data? 
+I'm not sure what would cause that distortion.. perhaps an error when attempting to re-sample data at the beginning of the song? zero volume data or maybe a lack of data to read causing the processor to re-sample and amplify erroneous data? 
 
 I could just output the stretched version of the song and chop off the distortion in the beginning, but it would be awesome (mainly for experimentation) to not get blasted by that distortion for a minute, should I turn the stretch up to ~800x.
 
-If you have time to look into it, I'\''d really appreciate it! Thanks!
+If you have time to look into it, I'd really appreciate it! Thanks!
 
 Edit:
-I experienced this with the default settings for http://sourceforge.net/projects/hypermammut/files/paulstretch/2.2/paulstretch_win32-2.2-2.zip/download'
+I experienced this with the default settings for http://sourceforge.net/projects/hypermammut/files/paulstretch/2.2/paulstretch_win32-2.2-2.zip/download
+EOF
 
-echo "✓ Created issue 16/16: First few seconds at any stretch have intense distortion"
+create_issue "First few seconds at any stretch have intense distortion" "$TEMP_DIR/issue16.md" "16"
 
 echo ""
 echo "✅ All 16 issues created successfully!"
